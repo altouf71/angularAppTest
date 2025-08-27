@@ -1,0 +1,72 @@
+<div class="header">
+    <div class="navbar">
+        <a class="menu" (click)="navAnimationClass()">
+          <i class="fa fa-fw fa-menu"></i>Menu</a>
+        <a class="active" href="#">
+          <i class="fa fa-fw fa-home"></i> Home</a>
+        <a class="menu">
+          <i class="fa fa-fw fa-search"></i> Search</a>
+        <a href="#">
+          <i class="fa fa-fw fa-envelope"></i> Contact</a>
+        <a (click)="animationClass()">
+          <i class="fa fa-fw fa-user"></i> Login</a>
+    </div>
+    <p>animation : {{ animationState }}....navAnimation : {{navAnimationState}}.....log view: {{logViewState}}....nav view : {{navViewState}}</p>
+</div>
+
+<!--
+<button (click)="toggleAnimation()">Toggle Animation</button>
+
+<button (click)="animationClass()">Toggle lass</button>
+-->
+<div class="main-body" [ngStyle]="{'position':'relative', 'width':'100%', 'height':'100%'}"><!--</div> *ngIf="viewState">-->
+
+<div class="main-nav-body"><!--</div> *ngIf="navViewState">-->
+
+    <div id="main" [ngClass]="navAnimationState" [ngStyle]="{'display':'block','position':'absolute','top':'60px','left':'0px','width':'50%','float':'left'}">
+
+        <span [ngStyle]="{'font-size':'30px','cursor':'pointer'}" (click)="openNav()">&#9776; open</span>
+
+        <div id="mySidenav" class="sidenav">
+            <a href="" class="closebtn" (click)="closeNav()">&times;</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Clients</a>
+            <a href="#">Contact</a>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="main-login-body"><!--</div> *ngIf="logViewState">-->
+
+<div [ngClass]="animationState" [ngStyle]="{'display':'block', 'right':'0px', 'width':'100%', 'height':'100%', 'float':'right'}">
+  <h2>Login User</h2>
+  <app-google-login></app-google-login>
+  <form>
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+
+
+    <div>
+        <button type="submit">Login</button>
+    </div>
+
+  </form>
+</div>
+
+</div>
+
+</div>
+
+

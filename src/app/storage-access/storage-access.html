@@ -1,0 +1,31 @@
+<p>storage-access works!</p>
+<!--
+<div class="storage-access">  
+  <h2>Storage Access</h2>
+  <p>This component allows you to request access to storage.</p>
+  
+  <button (click)="requestAccess()">Request Storage Access</button>
+  
+  <p *ngIf="accessStatus">{{ accessStatus }}</p>
+  
+</div>
+-->
+
+
+
+<div>
+  <button (click)="changerView()">View Div</button>
+  
+  <div *ngIf="viewStatus">
+    <p>{{ viewStatus }}</p>
+  
+  <div [ngStyle]="{'width':'100%'}">
+  <button [ngStyle]="{'margin-left':'20%'}">Refuser</button>
+  <button [ngStyle]="{'margin-right':'20%', 'float':'right'}">Autoriser</button>
+  
+  </div>
+  
+
+  </div>
+
+</div>

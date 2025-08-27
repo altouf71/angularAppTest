@@ -1,0 +1,265 @@
+.header{
+  width:100%;
+  height: 60px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  text-align: center;
+}
+
+
+
+
+/* Style the navigation bar */
+.navbar {
+  width: 100%;
+  height:100%;
+  background-color: #555;
+  overflow: auto;
+}
+
+/* Navbar links */
+.navbar a {
+  float: left;
+  text-align: center;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Navbar links on mouse-over */
+.navbar a:hover {
+  background-color: #000;
+}
+
+/* Current/active navbar link */
+.active {
+  background-color: #04AA6D;
+}
+
+/* Add responsiveness - will automatically display the navbar vertically instead of horizontally on screens less than 500 pixels */
+@media screen and (max-width: 500px) {
+  .navbar a {
+    float: none;
+    display: block;
+  }
+}
+
+
+
+
+
+
+
+
+
+.main-nav-body{
+  /*position:relative;*/
+  float:left;
+  width:100%;
+  height:50%;
+  margin:0px;
+  border: 1px solid rgb(5, 5, 5);
+  background-color: yellowgreen;
+}
+
+
+
+.main-login-body{
+  /*position:relative;*/
+  float:right;
+  width:100%;
+  height:100%;
+  margin:0px;
+  border: 1px solid black;
+  background-color: lightblue;
+}
+
+
+
+/*
+.login-window{
+  display: block;
+  position: absolute;
+  top: 60px;
+  right:0px;
+  width: 100%;
+  height: 100%;
+  background-color: #f8f9fa;
+  border: 1px solid black;
+}
+*/
+
+/* component.css */
+.animated-idel{
+  display:none;
+}
+
+.animated-in {
+  /*display: block;
+  position: absolute;*/
+  top: 60px;
+  right:0px;
+  width: 100%;
+  height: 100%;
+  background-color: #f8f9fa;
+  border: 1px solid black;
+  animation: bounce-in 2s forwards;
+}
+
+.animated-out {
+  /*display: block;
+  position: absolute;*/
+  top: 60px;
+  right:0px;
+  width: 100%;
+  height: 100%;
+  background-color: #f8f9fa;
+  border: 1px solid black;
+  animation: bounce-out 2s forwards;
+}
+
+@keyframes bounce-in {
+  from{//, 20%, 50%, 80%, 100% {
+    transform: translateX(0);
+  }
+
+  to {
+   transform: translateX(100%);
+   opacity:0;
+   display:none
+  }
+
+}
+
+@keyframes bounce-out {
+  from{//, 20%, 50%, 80%, 100% {
+    transform: translateX(100%);
+  }
+
+  to {
+   transform: translateX(0%);
+   opacity:1;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+.main{
+  position:absolute;
+  top:60px;
+  left:0px;
+  width:50%;
+  height:100%;
+  margin:0px;
+  border: 1px solid black;
+}
+
+/* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 100%; /* 0 width - change this with JavaScript */
+  /*position: absolute;*/ /* Stay in place */
+  /*z-index: 1; */ /* Stay on top */
+  /*top: 0px; */ /* Stay at the top */
+  /*left: 0;*/
+  background-color: #111; /* Black*/
+  /*overflow-x: hidden;*/ /* Disable horizontal scroll */
+  padding-top: 0px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+ /* position: absolute;
+  top: 0;
+  right: 25px;*/
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+
+.nav-animated-idel{
+  display:none;
+}
+
+
+.nav-animated-in {
+  /*position: absolute;*/
+  top: 60px;
+  left:0px;
+  width: 50%;
+  height: 100%;
+  background-color: #f8f9fa;
+  border: 1px solid black;
+  animation: nav-bounce-in 2s forwards;
+}
+
+
+.nav-animated-out {
+  /*position: relative;*/
+  top: 60px;
+  left:-50%;
+  width: 50%;
+  height: 100%;
+  background-color: #f8f9fa;
+  border: 1px solid black;
+  animation: nav-bounce-out 2s forwards ;
+}
+
+@keyframes nav-bounce-in {
+  from{
+    transform: translateX(0%);
+  }
+
+  to {
+   transform: translateX(-100%);
+   opacity:0;
+  }
+
+}
+
+@keyframes nav-bounce-out {
+  from{
+    transform: translateX(-100%);
+  }
+  to {
+   transform: translateX(0%);
+   opacity:1;
+  }
+
+}

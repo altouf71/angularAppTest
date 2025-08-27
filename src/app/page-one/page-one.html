@@ -1,0 +1,21 @@
+<p>page-one works!</p>
+
+    <h2>Data List, {{ title() }}</h2>
+<!--
+    <ul>
+      <li *ngFor="let data of dataList">
+        {{ data.id }} -  {{ data.title }} - {{ data.completed ? 'Completed' : 'Pending' }}
+      </li>
+    </ul>
+
+    <p *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p *ngIf="!dataList.length">No data available.</p>
+  -->
+
+    <button (click)="sendPost()">send Post</button>
+    <button (click)="loadData()">Load Data</button>
+    <p>traking..,  {{ tracking }} </p>
+    <p>count.., {{ count }} </p>
+    <p>isAdmin.., {{ isAdmin() }} </p>
+    <p>result.., {{ dataList | json}} </p>
+  
