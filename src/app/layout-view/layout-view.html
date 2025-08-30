@@ -43,53 +43,56 @@
         </div>
     </div>
 
-    <div class="col-md-4" 
-        [ngClass]="animationState" 
+    <div class="col-md-4"
+        [ngClass]="animationState"
         [ngStyle]="{'position':'absolute', 'top':'0px', 'right':'0px', 'width':'100%', 'height':'100vh', 'background-color':'lightgreen'}">
       <h3 [ngStyle]="{'width':'100%', 'height':'10%', 'margin':'0px', 'text-align':'center'}">Login User</h3>
-      
+
       <div [ngStyle]="{'width':'49%', 'height':'90%', 'float':'left', 'background-color':'lightgrey'}">
+        <!--
         <p [ngStyle]="{'text-align':'center'}">This is the second column.</p>
-        
+        -->
+        <h3 [ngStyle]="{'display':'inline-block', 'width':'100%', 'text-align':'center', 'margin':'0px', 'color':'gray'}"> Google LogIn </h3>
+
         <div [ngStyle]="{'width':'100%', 'height':'10%', 'margin':'0px'}">
             <app-google-login [ngStyle]="{'margin-left':'20%'}"></app-google-login>
-        </div> 
-        
+        </div>
+
       </div>
 
 
       <!--container email login user -->
-      <div class="main-login-body" [ngStyle]="{'color':'gray'}"><!--</div> *ngIf="logViewState">-->    
-  
+      <div class="main-login-body" [ngStyle]="{'color':'gray'}"><!--</div> *ngIf="logViewState">-->
+
           <form (ngSubmit)="onSubmit(myForm.value)" #myForm="ngForm">
 
               <div [ngStyle]="{'width':'100%', 'height':'40%', 'margin':'0px', 'margin-top':'10%'}">
                   <label for="username" [ngStyle]="{'display':'inline-block', 'width':'30%', 'text-align':'right', 'margin-right':'10px'}">Username :</label>
-                  <input [ngStyle]="{'width':'50%', 'height':'30px'}" 
+                  <input [ngStyle]="{'width':'50%', 'height':'30px'}"
                          [(ngModel)]="formData.username" type="text" id="username" name="username">
               </div>
 
               <div [ngStyle]="{'width':'100%', 'height':'40%', 'margin':'0px', 'margin-top':'5%'}">
                   <label for="password" [ngStyle]="{'display':'inline-block', 'width':'30%', 'text-align':'right', 'margin-right':'10px'}">Password :</label>
-                  <input [ngStyle]="{'width':'50%', 'height':'30px'}" 
+                  <input [ngStyle]="{'width':'50%', 'height':'30px'}"
                           [(ngModel)]="formData.password" type="password" id="password" name="password">
               </div>
 
-            
+
               <div [ngStyle]="{'width':'100%', 'height':'40%', 'margin':'0px', 'margin-top':'5%'}">
                   <label for="email" [ngStyle]="{'display':'inline-block', 'width':'30%', 'text-align':'right', 'margin-right':'10px'}">Email :</label>
-                  <input [ngStyle]="{'width':'50%', 'height':'30px'}" 
+                  <input [ngStyle]="{'width':'50%', 'height':'30px'}"
                           [(ngModel)]="formData.email" type="email" id="email" name="email" >
               </div>
-            
+
 
               <div [ngStyle]="{'width':'100%', 'height':'20%', 'margin-top':'30px'}">
-                  <button type="submit" 
+                  <button type="submit"
                   [ngStyle]="{'width':'50%', 'height':'40px', 'margin-left':'25%'}">Login</button>
               </div>
 
           </form>
-  
+
       </div>
 
 
@@ -104,7 +107,7 @@
       <h3>Produits</h3>
       <p>This is the third column.</p>
     </div>
-  
+
   <!--</div>-->
 
   </div>
