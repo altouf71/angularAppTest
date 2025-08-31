@@ -27,6 +27,8 @@ export class LayoutView {
     email:''
   };
 
+  errorMessage = '';
+
     animationState = 'animated-idel';
     navAnimationState = 'nav-animated-idel';
     produitAnimationState = 'produit-animated-idel';
@@ -34,6 +36,9 @@ export class LayoutView {
     navViewState = false;
     logViewState = false;
     produitViewState = false;
+
+    isLoggedIn = false;
+    loginError = '';
 
     private apiUrl = 'http://localhost:4200/page-data'; // Example API
 
@@ -59,6 +64,65 @@ onSubmit(myData: any){
 }
 
 
+
+
+  onLogin() {
+    this.http.post('http://localhost:4200/auth/login', {
+      email: this.formData.email,
+      password: this.formData.password
+    }).subscribe({
+      next: (response) => {
+        // Handle successful login (e.g., save token, redirect)
+        console.log('Login successful', response);
+        this.errorMessage = '';
+      },
+      error: (err) => {
+        this.errorMessage = 'Invalid credentials';
+      }
+    });
+  }
+
+
+
+
+
+
+
+
+login() {
+  // Replace with your real authentication API endpoint
+  this.http.post('http://localhost:4200/auth/login', {
+    email: this.formData.email,
+    password: this.formData.password
+  }).subscribe({
+    next: (response: any) => {
+      // Example: check for token or success property
+      if (response.token) {
+        this.isLoggedIn = true;
+        this.loginError = '';
+        // Optionally store token in localStorage/sessionStorage
+      } else {
+        this.loginError = 'Login failed';
+      }
+    },
+    error: () => {
+      this.loginError = 'Invalid credentials';
+    }
+  });
+}
+
+
+
+
+
+
+
+logout() {
+  //localStorage.removeItem('authToken');
+  this.isLoggedIn = false;
+  this.formData.email = '';
+  this.formData.password = '';
+}
 
 
 
@@ -108,11 +172,11 @@ submit(myData: any){
           }
         );
     }
-  
 
 
 
-      
+
+
 
 
 

@@ -93,6 +93,33 @@
 
           </form>
 
+
+
+
+
+
+
+
+<!-- Add this to layout-view.html -->
+<div *ngIf="!isLoggedIn">
+  <form (ngSubmit)="login()" #loginForm="ngForm">
+    <label>Email:</label>
+    <input type="email" name="email" [(ngModel)]="formData.email" required>
+    <label>Password:</label>
+    <input type="password" name="password" [(ngModel)]="formData.password" required>
+    <button type="submit">Login</button>
+  </form>
+  <div *ngIf="loginError">{{ loginError }}</div>
+</div>
+<div *ngIf="isLoggedIn">
+  <p>Welcome, {{ formData.email }}!</p>
+  <button (click)="logout()">Logout</button>
+</div>
+
+
+
+
+
       </div>
 
 
