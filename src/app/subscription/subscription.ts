@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpEventType } from '@angular/common/http';
+import { Form, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-subscribtion',
-  templateUrl: './subscribtion.html',
-  styleUrls: ['./subscribtion.scss']
+  selector: 'app-subscription',
+   imports: [CommonModule, FormsModule],
+  templateUrl: './subscription.html',
+  styleUrls: ['./subscription.scss']
 })
-export class Subscribtion {
+export class Subscription {
   formData = {
     email: '',
     plan: ''
