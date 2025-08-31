@@ -11,6 +11,7 @@ export class StorageAccess {
 
   accessStatus: string = '';
   viewStatus: boolean = true;
+  loginError: string = '';
   
       /*
       async requestAccess(): Promise<void> {
@@ -29,12 +30,52 @@ export class StorageAccess {
           this.accessStatus = `Storage access denied: ${error instanceof Error ? error.message : 'Unknown error'}`;
         }
       }
-      */
+      
 
       changerView(){
 
         this.viewStatus = !this.viewStatus;
 
       }
+*/
+
+
+// ...existing code...
+
+showConsent = false;
+userConsent = false;
+
+ngOnInit() {
+  // Check if consent is already given
+  const consent = localStorage.getItem('userConsent');
+  this.userConsent = consent === 'true';
+  this.showConsent = !this.userConsent;
+}
+
+approveConsent() {
+  this.userConsent = true;
+  localStorage.setItem('userConsent', 'true');
+  this.showConsent = false;
+  // Now you can safely use localStorage/cookies
+}
+
+declineConsent() {
+  this.userConsent = false;
+  localStorage.setItem('userConsent', 'false');
+  this.showConsent = false;
+  // Avoid using localStorage/cookies for this session
+}
+
+// Example usage:
+login() {
+  if (!this.userConsent) {
+    this.loginError = 'Please approve cookies/local storage to continue.';
+    return;
+  }
+  // ...existing login logic...
+}
+
+// ...existing code...
+
 
 }

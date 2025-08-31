@@ -5,6 +5,7 @@ import { MainPage} from './main-page/main-page';
 import { LoginWin } from './login-win/login-win';
 import { LayoutView} from './layout-view/layout-view';
 import { Subscription } from './subscription/subscription';
+import { StorageAccess } from './storage-access/storage-access';
 import { App } from './app';
 
 export const routes: Routes = [
@@ -14,5 +15,6 @@ export const routes: Routes = [
     { path: 'page2', component: FirstPage },
     { path: 'login', component: LoginWin},
     { path: 'layout', component: LayoutView },
-    { path: 'subscription', component: Subscription }
+    { path: 'subscription', component: Subscription },
+    { path: 'storage', component: StorageAccess}
 ];

@@ -9,7 +9,7 @@
   <p *ngIf="accessStatus">{{ accessStatus }}</p>
   
 </div>
--->
+
 
 
 
@@ -28,4 +28,21 @@
 
   </div>
 
+</div>
+-->
+
+
+
+
+
+<!-- Consent Modal -->
+<div *ngIf="showConsent" class="consent-modal">
+  <div class="consent-content">
+    <p>
+      We use local storage and cookies to enhance your experience.  
+      Do you approve the use of these technologies?
+    </p>
+    <button (click)="approveConsent()">Approve</button>
+    <button (click)="declineConsent()">Decline</button>
+  </div>
 </div>
