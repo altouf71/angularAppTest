@@ -15,10 +15,15 @@ export interface Data {
 
 @Component({
   selector: 'app-layout-view',
-  imports: [CommonModule, GoogleLogin, FormsModule],
+  imports: [CommonModule
+            , GoogleLogin
+            , FormsModule
+          ] ,
   templateUrl: './layout-view.html',
   styleUrl: './layout-view.scss'
 })
+
+
 export class LayoutView {
 
   formData = {
