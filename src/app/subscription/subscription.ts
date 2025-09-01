@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpEventType } from '@angular/common/http';
+//import { HttpEventType } from '@angular/common/http';
 import { Form, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

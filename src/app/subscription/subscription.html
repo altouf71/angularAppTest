@@ -1,4 +1,6 @@
+<!--
 <p>subscribtion works!</p>
+-->
 <div class="subscription-container">
   <h2>Subscribe to Our Service</h2>
   <form (ngSubmit)="onSubscribe()" #subscribeForm="ngForm">
@@ -15,7 +17,7 @@
 
     <button type="submit">Subscribe</button>
   </form>
-    `@if(subscriptionMessage){
-      <div >{{ subscriptionMessage }}</div>
-    }`
+    
+      <div *ngIf="subscriptionMessage" >{{ subscriptionMessage }}</div>
+    
 </div>

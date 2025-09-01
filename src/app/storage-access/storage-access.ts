@@ -48,7 +48,7 @@ userConsent = false;
 ngOnInit() {
   // Check if consent is already given
   const consent = localStorage.getItem('userConsent');
-  this.userConsent = consent === 'true';
+  this.userConsent = consent === 'false';
   this.showConsent = !this.userConsent;
 }
 
