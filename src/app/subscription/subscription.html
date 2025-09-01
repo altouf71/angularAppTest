@@ -15,5 +15,7 @@
 
     <button type="submit">Subscribe</button>
   </form>
-  <div *ngIf="subscriptionMessage">{{ subscriptionMessage }}</div>
+    `@if(subscriptionMessage){
+      <div >{{ subscriptionMessage }}</div>
+    }`
 </div>

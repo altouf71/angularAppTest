@@ -10,11 +10,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './subscription.html',
   styleUrls: ['./subscription.scss']
 })
+
 export class Subscription {
+
   formData = {
     email: '',
     plan: ''
   };
+
   subscriptionMessage = '';
 
   constructor(private http: HttpClient) {}
