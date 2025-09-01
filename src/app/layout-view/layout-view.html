@@ -1,3 +1,4 @@
+<!--
 <div class="header">
     <div class="navbar">
         <a class="menu" (click)="navAnimationClass()">
@@ -20,6 +21,7 @@
         nav view : {{navViewState}}
     </p>
 </div>
+-->
 
 <button (click)="navAnimationClass()">Menu toggle</button>
 
@@ -91,8 +93,9 @@
                   [ngStyle]="{'width':'50%', 'height':'40px', 'margin-left':'25%'}">Login</button>
               </div>
 
-                <a class="subscription" href='http://localhost:4200/subscription'>
-                  <i>Subscription</i>
+                <a [ngStyle]="{'display':'inline-block', 'width':'100%', 'text-align':'center', 'margin-top':'30px'}"
+                    class="subscription" href='http://localhost:4200/subscription'>
+                  <i>Tab this link if you heve not an account Subscription</i>
                 </a>
 
           </form>
@@ -105,7 +108,7 @@
 
 
 <!-- Add this to layout-view.html -->
-<div *ngIf="!isLoggedIn">
+<div *ngIf="isLoggedIn">
   <form (ngSubmit)="login()" #loginForm="ngForm">
     <label>Email:</label>
     <input type="email" name="email" [(ngModel)]="formData.email" required>

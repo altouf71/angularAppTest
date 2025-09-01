@@ -3,13 +3,18 @@ import {
   createNodeRequestHandler,
   isMainModule,
   writeResponseToNodeResponse,
-} from '@angular/ssr/node';
+}
+
+from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import  mysql2  from 'mysql2';
 import cors from 'cors';
+import { WebSocketServer } from 'ws';
+
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -87,6 +92,26 @@ if (isMainModule(import.meta.url)) {
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
 }
+
+
+
+
+
+const wss = new WebSocketServer({ port: 4000 });
+
+wss.on('connection', (socket) => {
+  console.log('web socket connection')
+  const fileStream = fs.createWriteStream('./live-stream.webm');
+  socket.on('message', (data) => {
+    fileStream.write(data);
+    // You can also broadcast to other clients here
+  });
+  socket.on('close', () => {
+    fileStream.end();
+  });
+});
+
+
 
 
 app.post('/page-data',(req, res) => {
@@ -192,6 +217,46 @@ app.get('/first-page',(req, res) => {
       res.sendFile(path.resolve('./src/app/first-page/first-page.html'));
 
 });
+
+
+
+
+
+
+
+app.get('/video', (req, res) => {
+  //const videoPath = path.join(__dirname, 'assets', 'sample.mp4');
+  const videoPath = path.resolve('./assets/sample.mp4');
+  console.log('videoPath : ', videoPath);
+  const stat = fs.statSync(videoPath);
+  const fileSize = stat.size;
+  const range = req.headers.range;
+
+  if (range) {
+    const parts = range.replace(/bytes=/, '').split('-');
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+    const chunksize = (end - start) + 1;
+    const file = fs.createReadStream(videoPath, { start, end });
+    const head = {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunksize,
+      'Content-Type': 'video/mp4',
+    };
+    res.writeHead(206, head);
+    file.pipe(res);
+  } else {
+    const head = {
+      'Content-Length': fileSize,
+      'Content-Type': 'video/mp4',
+    };
+    res.writeHead(200, head);
+    fs.createReadStream(videoPath).pipe(res);
+  }
+});
+
+
 
 
 

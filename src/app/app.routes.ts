@@ -6,6 +6,7 @@ import { LoginWin } from './login-win/login-win';
 import { LayoutView} from './layout-view/layout-view';
 import { Subscription } from './subscription/subscription';
 import { StorageAccess } from './storage-access/storage-access';
+import { VideoStreaming } from './video-streaming/video-streaming';
 import { App } from './app';
 
 export const routes: Routes = [
@@ -16,5 +17,6 @@ export const routes: Routes = [
     { path: 'login', component: LoginWin},
     { path: 'layout', component: LayoutView },
     { path: 'subscription', component: Subscription },
-    { path: 'storage', component: StorageAccess}
+    { path: 'storage', component: StorageAccess},
+    { path: 'streaming', component: VideoStreaming}
 ];

@@ -33,9 +33,11 @@
     "@angular/ssr": "^20.1.6",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "fs": "^0.0.1-security",
     "mysql2": "^3.14.3",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@angular/animations": "^20.2.0",
@@ -45,6 +47,7 @@
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
+    "@types/ws": "^8.18.1",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
