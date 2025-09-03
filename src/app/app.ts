@@ -7,7 +7,7 @@ import { Header } from './header/header'
 
 @Component({
   selector: 'app-root',
-  imports: [Header,
+  imports: [
     RouterOutlet
    // , StorageAccess
   ],
