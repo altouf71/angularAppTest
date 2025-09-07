@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  myLapTop
+  vmImage: 'windows-latest'
 
 steps:
   - task: DownloadBuildArtifacts@1
