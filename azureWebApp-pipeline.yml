@@ -10,35 +10,25 @@ pool:
   myLapTop
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
+  - task: DownloadBuildArtifacts@1
+    inputs:
+      buildType: 'specific'
+      project: '488af890-9aa3-402a-8504-fef1877567b7'
+      pipeline: '1'
+      specificBuildWithTriggering: true
+      buildVersionToDownload: 'latest'
+      allowPartiallySucceededBuilds: true
+      downloadType: 'single'
+      artifactName: 'angularAppTestArtifacts'
+      downloadPath: '$(System.ArtifactsDirectory)'
 
-- script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --prod
-  displayName: 'npm install and build'
-
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/*.csproj'
-    versioningScheme: 'off'
-    packDestination: '$(Build.AtifactStgingDirectory)'
-  displayName: MyWebApp
-
-##- task: PublishBuildArtifacts@1
-#  inputs:
-#    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#    ArtifactName: 'drop'
-#    publishLocation: 'Container'
-
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish Artifacts'
-  inputs:
-    targetPath: '$(Pipeline.Workspace)'
-    artifact: 'MyWebApp'
-    publishLocation: 'pipeline'
+  - task: AzureWebApp@1 
+    inputs:
+      azureSubscription: 'Azure subscription 1(0ea2ee0e-54d2-4fb8-ab64-cd4250597f0d)'
+      appType: 'webAppLinux'
+      appName: 'anotherAngularTest'
+      deployToSlotOrASE: true
+      resourceGroupName: 'anotherAngularTest_group'
+      slotName: 'production'
+      package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+      runtimeStack: 'NODE|20-lts'
