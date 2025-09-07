@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'windows-latest'
+  myLapTop
 
 steps:
   - task: DownloadBuildArtifacts@1
@@ -19,7 +19,7 @@ steps:
       buildVersionToDownload: 'latest'
       allowPartiallySucceededBuilds: true
       downloadType: 'single'
-      artifactName: 'angularAppTestArtifacts'
+      artifactName: 'myWebApp'
       downloadPath: '$(System.ArtifactsDirectory)'
 
   - task: AzureWebApp@1 
