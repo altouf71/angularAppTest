@@ -30,6 +30,6 @@ steps:
 - task: PublishPipelineArtifact@1
   displayName: 'Publish Artifacts'
   inputs:
-    targetPath: '$(Pipeline.Workspace)/drop'
+    targetPath: '$(Pipeline.Workspace)'
     artifact: 'MyWebApp'
     publishLocation: 'pipeline'
