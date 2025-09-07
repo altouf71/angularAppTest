@@ -10,17 +10,27 @@ pool:
   myLapTop
 
 steps:
-  - task: DownloadBuildArtifacts@1
+#  - task: DownloadBuildArtifacts@1
+#    inputs:
+#      buildType: 'specific'
+#      project: '488af890-9aa3-402a-8504-fef1877567b7'
+#      pipeline: '1'
+#      specificBuildWithTriggering: true
+#      buildVersionToDownload: 'latest'
+#      allowPartiallySucceededBuilds: true
+#      downloadType: 'single'
+#      artifactName: 'myWebApp'
+#      downloadPath: '$(System.ArtifactsDirectory)'
+
+  - task: DownloadPipelineArtifact@2
     inputs:
       buildType: 'specific'
       project: '488af890-9aa3-402a-8504-fef1877567b7'
-      pipeline: '1'
+      definition: '1'
       specificBuildWithTriggering: true
       buildVersionToDownload: 'latest'
       allowPartiallySucceededBuilds: true
-      downloadType: 'single'
-      artifactName: 'myWebApp'
-      downloadPath: '$(System.ArtifactsDirectory)'
+      targetPath: '$(Pipeline.Workspace)'
 
   - task: AzureWebApp@1 
     inputs:
