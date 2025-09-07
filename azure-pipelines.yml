@@ -21,6 +21,15 @@ steps:
     ng build --prod
   displayName: 'npm install and build'
 
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    versioningScheme: 'off'
+    packDestination: '$(Build.AtifactStgingDirectory)'
+  displayName: MyWebApp
+
 ##- task: PublishBuildArtifacts@1
 #  inputs:
 #    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
