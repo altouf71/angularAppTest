@@ -40,5 +40,5 @@ steps:
       deployToSlotOrASE: true
       resourceGroupName: 'anotherAngularTest_group'
       slotName: 'production'
-      package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+      package: '$(System.DefaultWorkingDirectory)'
       runtimeStack: 'NODE|20-lts'
