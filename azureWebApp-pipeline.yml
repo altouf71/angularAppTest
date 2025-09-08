@@ -3,6 +3,8 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 # azure-pipelines.yml
+# npm install Install project dependencies
+# npm run build Run your build script (if applicable)
 
 trigger:
   - main # Trigger the pipeline on pushes to the main branch
@@ -27,8 +29,9 @@ stages:
         versionSpec: '20.x' # Specify the Node.js version
 
     - script: |
-        npm install # Install project dependencies
-        npm run build # Run your build script (if applicable)
+        npm install -g @angular/cli
+        npm install
+        ng build --prod
       displayName: 'Install dependencies and Build'
 
     - task: ArchiveFiles@2
