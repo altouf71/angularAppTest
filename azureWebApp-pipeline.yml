@@ -49,10 +49,10 @@ stages:
     #    publishLocation: 'Container'
 
     # In your build stage/pipeline
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathToPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-        artifactName: 'myWebApp'
+#    - task: PublishBuildArtifacts@1
+#      inputs:
+#        pathToPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+#        artifactName: 'myWebApp'
 
 #    - task: DownloadBuildArtifacts@1
 #      inputs:
