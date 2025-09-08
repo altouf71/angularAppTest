@@ -84,7 +84,7 @@ stages:
         replaceExistingArchive: true
 
     - publish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-      artifact: 'drop'
+      artifact: 'myWebApp'
       displayName: 'Publish Build Artifact'
 
 - stage: Release
@@ -114,5 +114,5 @@ stages:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
         #package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
-        package: '$(System.DefaultWorkingDirectory)/$(appName).zip'
+        package: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
         appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
