@@ -87,16 +87,23 @@ stages:
       artifact: 'drop'
       displayName: 'Publish Build Artifact'
 
-  # In your release stage/pipeline
-    - task: DownloadBuildArtifacts@0
-      inputs:
-        buildType: 'current' # or 'specific' if from another build
-        artifactName: 'myWebApp'
-        downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
+- stage: Release
+  displayName: Release project
+  dependsOn: Build
+  jobs:
+    - job: ReleaseJob
+      displayName: Release Application
+      steps:
+      # In your release stage/pipeline
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          buildType: 'current' # or 'specific' if from another build
+          artifactName: 'drop'
+          downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
 
 - stage: Deploy
   displayName: Deploy to Azure App Service
-  dependsOn: Build # This stage depends on the successful completion of the Build stage
+  dependsOn: Release # Build  This stage depends on the successful completion of the Build stage
   jobs:
   - job: DeployJob
     displayName: Deploy Application
