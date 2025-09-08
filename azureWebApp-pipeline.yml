@@ -84,12 +84,13 @@ stages:
         replaceExistingArchive: false
 
     - task: PublishBuildArtifacts@1
-      inputs:
-        TargetPath: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-#        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-#        ArtifactName: 'myWebApp'
-        publishLocation: 'filepath'
       displayName: 'Publish Build Artifacts'
+      inputs:
+        TargetPath: '$(Build.ArtifactStagingDirectory)/$(appName)'
+#        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+        ArtifactName: 'myWebApp'
+        publishLocation: 'filepath'
+      
 
     #- publish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
     #  artifactName: 'myWebApp'
