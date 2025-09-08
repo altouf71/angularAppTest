@@ -47,17 +47,24 @@ stages:
     #    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     #    ArtifactName: 'drop'
     #    publishLocation: 'Container'
-    - task: DownloadBuildArtifacts@1
+
+    # In your build stage/pipeline
+    - task: PublishBuildArtifacts@1
       inputs:
-        buildType: 'specific'
-        project: '488af890-9aa3-402a-8504-fef1877567b7'
-        pipeline: '1'
-        specificBuildWithTriggering: true
-        buildVersionToDownload: 'latest'
-        allowPartiallySucceededBuilds: true
-        downloadType: 'single'
+        pathToPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
         artifactName: 'myWebApp'
-        downloadPath: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+
+#    - task: DownloadBuildArtifacts@1
+#      inputs:
+#        buildType: 'specific'
+#        project: '488af890-9aa3-402a-8504-fef1877567b7'
+#        pipeline: '1'
+#        specificBuildWithTriggering: true
+#        buildVersionToDownload: 'latest'
+#        allowPartiallySucceededBuilds: true
+#        downloadType: 'single'
+#        artifactName: 'myWebApp'
+#        downloadPath: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
 
 
 #    - task: PublishPipelineArtifact@1
@@ -92,5 +99,5 @@ stages:
       inputs:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
-        package: '$(Pipeline.Workspace)/$(appName).zip' # Path to the published artifact
+        package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
         appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
