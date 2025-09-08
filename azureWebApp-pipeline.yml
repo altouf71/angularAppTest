@@ -84,7 +84,7 @@ stages:
         replaceExistingArchive: true
 
     - publish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-      artifact: 'myWebApp'
+      artifact: 'drop'
       displayName: 'Publish Build Artifact'
 
   # In your release stage/pipeline
