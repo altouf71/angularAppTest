@@ -104,12 +104,12 @@ stages:
     - job: ReleaseJob
       displayName: Release Application
       steps:
-      # In your release stage/pipeline
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          buildType: 'current' # or 'specific' if from another build
-          artifactName: 'myWebApp'
-          downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
+#       In your release stage/pipeline
+#      - task: DownloadBuildArtifacts@0
+#        inputs:
+#          buildType: 'current' # or 'specific' if from another build
+#          artifactName: 'myWebApp'
+#          downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
 
 
       - task: DownloadBuildArtifacts@1
