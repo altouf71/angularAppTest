@@ -84,7 +84,7 @@ stages:
         replaceExistingArchive: true
 
     - publish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-      artifact: 'myWebApp'
+      artifact: 'drop'
       displayName: 'Publish Build Artifact'
 
 - stage: Release
@@ -98,7 +98,7 @@ stages:
       - task: DownloadBuildArtifacts@0
         inputs:
           buildType: 'current' # or 'specific' if from another build
-          artifactName: 'drop'
+          artifactName: 'myWebApp'
           downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
 
 - stage: Deploy
