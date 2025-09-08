@@ -124,5 +124,15 @@ stages:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
         #package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
-        package: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+        #package: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+        runtimeStack: 'NODE|20-lts'
         appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
+
+#    - task: AzureWebApp@1
+#      inputs:
+#        azureSubscription: 'Azure subscription 1(0ea2ee0e-54d2-4fb8-ab64-cd4250597f0d)'
+#        appType: 'webAppLinux'
+#        appName: 'anotherAngularTest'
+#        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+#        runtimeStack: 'NODE|20-lts'
