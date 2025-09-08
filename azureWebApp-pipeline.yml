@@ -111,6 +111,19 @@ stages:
           artifactName: 'myWebApp'
           downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
 
+
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'specific'
+          project: '488af890-9aa3-402a-8504-fef1877567b7'
+          pipeline: '1'
+          specificBuildWithTriggering: true
+          buildVersionToDownload: 'latest'
+          downloadType: 'single'
+          #downloadPath: '$(System.ArtifactsDirectory)'
+          downloadPath: '$(Build.artifats.Directory)'
+          artifactName: myWebApp
+
 - stage: Deploy
   displayName: Deploy to Azure App Service
   dependsOn: Release # Build  This stage depends on the successful completion of the Build stage
@@ -124,9 +137,9 @@ stages:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
         #package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
-        #package: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+        package: '$(Build.ArtifactsDirectory)/$(appName)/*.zip'
         #package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-        package: 'https://dev.azure.com/zahrirbelkacem/_apis/resources/Containers/40363855/myWebApp?itemPath=myWebApp%2FanotherAngularTest.zip'
+        #package: 'https://dev.azure.com/zahrirbelkacem/_apis/resources/Containers/40363855/myWebApp?itemPath=myWebApp%2FanotherAngularTest.zip'
         runtimeStack: 'NODE|20-lts'
         appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
 #https://dev.azure.com/zahrirbelkacem/_apis/resources/Containers/40363855/myWebApp?itemPath=myWebApp%2FanotherAngularTest.zip
