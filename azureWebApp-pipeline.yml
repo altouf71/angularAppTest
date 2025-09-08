@@ -115,7 +115,8 @@ stages:
           buildType: 'current' # or 'specific' if from another build
           artifactName: 'myWebApp'
           #downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
-          downloadPath: '$(Build.ArtifactStagingDirectory)/myWebApp/'
+          #downloadPath: '$(Build.ArtifactStagingDirectory)/myWebApp/'
+          downloadPath: '$(Build.ArtifactsDirectory)/myWebApp/'
 
 #      - task: DownloadBuildArtifacts@1
 #        inputs:
@@ -131,7 +132,7 @@ stages:
 
 - stage: Deploy
   displayName: Deploy to Azure App Service
-  dependsOn: Release # Build  This stage depends on the successful completion of the Build stage
+  dependsOn: Release # Build  This stage depends on the successful completion of the Release stage
   jobs:
   - job: DeployJob
     displayName: Deploy Application
@@ -141,10 +142,10 @@ stages:
       inputs:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
-        package: '$(Build.ArtifactStagingDirectory)/myWebApp/$(appName).zip' # Path to the published artifact
-        #package: '$(Build.ArtifactsDirectory)/myWebApp/$(appName).zip'
+        #package: '$(Build.ArtifactStagingDirectory)/myWebApp/$(appName).zip' # Path to the published artifact
+        package: '$(Build.ArtifactsDirectory)/myWebApp/$(appName).zip'
         #package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-        runtimeStack: 'NODE|20-lts'
+        #runtimeStack: 'NODE|20-lts'
         appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
 #    - task: AzureWebApp@1
 #      inputs:
