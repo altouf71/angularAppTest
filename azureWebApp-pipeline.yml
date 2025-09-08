@@ -34,6 +34,39 @@ stages:
         ng build --prod
       displayName: 'Install dependencies and Build'
 
+    - task: NuGetCommand@2
+      inputs:
+        command: 'pack'
+        packagesToPack: '**/*.csproj'
+        versioningScheme: 'off'
+        packDestination: '$(Build.AtifactStgingDirectory)'
+      displayName: MyWebApp
+
+    #- task: PublishBuildArtifacts@1
+    #  inputs:
+    #    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    #    ArtifactName: 'drop'
+    #    publishLocation: 'Container'
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'specific'
+        project: '488af890-9aa3-402a-8504-fef1877567b7'
+        pipeline: '1'
+        specificBuildWithTriggering: true
+        buildVersionToDownload: 'latest'
+        allowPartiallySucceededBuilds: true
+        downloadType: 'single'
+        artifactName: 'myWebApp'
+        downloadPath: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+
+
+#    - task: PublishPipelineArtifact@1
+#      displayName: 'Publish Artifacts'
+#      inputs:
+#        targetPath: '$(Pipeline.Workspace)'
+#        artifact: 'MyWebApp'
+#        publishLocation: 'pipeline'
+
     - task: ArchiveFiles@2
       displayName: 'Archive Application Files'
       inputs:
