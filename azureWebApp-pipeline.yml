@@ -142,7 +142,7 @@ stages:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
         #package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
-        package: '$(Build.ArtifactsDirectory)/$(appName)/*.zip'
+        package: '$(Build.ArtifactsDirectory)/myWebApp/$(appName).zip'
         #package: '$(System.DefaultWorkingDirectory)/**/*.zip'
         #package: 'https://dev.azure.com/zahrirbelkacem/_apis/resources/Containers/40363855/myWebApp?itemPath=myWebApp%2FanotherAngularTest.zip'
         runtimeStack: 'NODE|20-lts'
