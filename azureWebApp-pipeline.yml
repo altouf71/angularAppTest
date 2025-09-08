@@ -87,7 +87,7 @@ stages:
       inputs:
         TargetPath: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
 #        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-        ArtifactName: 'myWebApp'
+#        ArtifactName: 'myWebApp'
         publishLocation: 'filepath'
       displayName: 'Publish Build Artifacts'
 
