@@ -104,25 +104,30 @@ stages:
     - job: ReleaseJob
       displayName: Release Application
       steps:
+      
 #       In your release stage/pipeline
-#      - task: DownloadBuildArtifacts@0
-#        inputs:
-#          buildType: 'current' # or 'specific' if from another build
-#          artifactName: 'myWebApp'
-#          downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
-
-
-      - task: DownloadBuildArtifacts@1
+      - task: DownloadBuildArtifacts@0
         inputs:
-          buildType: 'specific'
+          #buildType: 'specific'
           project: '488af890-9aa3-402a-8504-fef1877567b7'
           pipeline: '1'
-          specificBuildWithTriggering: true
           buildVersionToDownload: 'latest'
-          downloadType: 'single'
-          #downloadPath: '$(System.ArtifactsDirectory)'
-          downloadPath: '$(Build.ArtifatsDirectory)'
-          artifactName: myWebApp
+          buildType: 'current' # or 'specific' if from another build
+          artifactName: 'myWebApp'
+          downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
+
+
+#      - task: DownloadBuildArtifacts@1
+#        inputs:
+#          buildType: 'specific'
+#          project: '488af890-9aa3-402a-8504-fef1877567b7'
+#          pipeline: '1'
+#          specificBuildWithTriggering: true
+#          buildVersionToDownload: 'latest'
+#          downloadType: 'single'
+#          #downloadPath: '$(System.ArtifactsDirectory)'
+#          downloadPath: '$(Build.ArtifatsDirectory)'
+#          artifactName: myWebApp
 
 - stage: Deploy
   displayName: Deploy to Azure App Service
