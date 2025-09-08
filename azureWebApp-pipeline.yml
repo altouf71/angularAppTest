@@ -86,10 +86,10 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Build Artifacts'
       inputs:
-        TargetPath: '$(Build.ArtifactStagingDirectory)/appName'
+        TargetPath: '$(Build.ArtifactStagingDirectory)/$(appName)'
 #        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
         ArtifactName: 'myWebApp'
-        publishLocation: 'filepath'
+        publishLocation: 'container'
       
 
     #- publish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
