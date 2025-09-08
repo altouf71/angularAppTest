@@ -81,11 +81,12 @@ stages:
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
-        replaceExistingArchive: true
+        replaceExistingArchive: false
 
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+        TargetPath: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+#        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
         ArtifactName: 'myWebApp'
         publishLocation: 'Container'
 
