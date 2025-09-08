@@ -113,5 +113,6 @@ stages:
       inputs:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
-        package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
+        #package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
+        package: '$(System.DefaultWorkingDirectory)/$(appName).zip'
         appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
