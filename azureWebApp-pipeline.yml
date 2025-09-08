@@ -121,7 +121,7 @@ stages:
           buildVersionToDownload: 'latest'
           downloadType: 'single'
           #downloadPath: '$(System.ArtifactsDirectory)'
-          downloadPath: '$(Build.artifats.Directory)'
+          downloadPath: '$(Build.ArtifatsDirectory)'
           artifactName: myWebApp
 
 - stage: Deploy
