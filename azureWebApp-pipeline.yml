@@ -98,26 +98,26 @@ stages:
     #  publishLocation: 'container'
     #  displayName: 'Publish Build Artifact'
 
-#- stage: Release
-#  displayName: Release project
-#  dependsOn: Build
-#  jobs:
-#    - job: ReleaseJob
-#      displayName: Release Application
-#      steps:
+- stage: Release
+  displayName: Release project
+  dependsOn: Build
+  jobs:
+    - job: ReleaseJob
+      displayName: Release Application
+      steps:
       
 #       In your release stage/pipeline
-#      - task: DownloadBuildArtifacts@0
-#        inputs:
-#          #buildType: 'specific'
-#          project: '488af890-9aa3-402a-8504-fef1877567b7'
-#          pipeline: '1'
-#          buildVersionToDownload: 'latest'
-#          buildType: 'current' # or 'specific' if from another build
-#          artifactName: 'myWebApp'
-#          #downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
-#          downloadPath: '$(Build.ArtifactStagingDirectory)/myWebApp/'
-#          #downloadPath: '$(Build.ArtifactsDirectory)/'
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          buildType: 'specific'
+          project: '488af890-9aa3-402a-8504-fef1877567b7'
+          pipeline: '1'
+          buildVersionToDownload: 'latest'
+          #buildType: 'current' # or 'specific' if from another build
+          artifactName: 'myWebApp'
+          #downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
+          downloadPath: '$(Build.ArtifactStagingDirectory)/myWebApp'
+          #downloadPath: '$(Build.ArtifactsDirectory)/'
 
 #      - task: DownloadBuildArtifacts@1
 #        inputs:
