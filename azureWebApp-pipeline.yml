@@ -80,7 +80,7 @@ stages:
         rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
         includeRootFolder: false
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/drop/$(appName).zip'
         replaceExistingArchive: true
 
     - publish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
@@ -106,5 +106,5 @@ stages:
       inputs:
         azureSubscription: '$(azureSubscription)'
         appName: '$(appName)'
-        package: '$(Build.ArtifactStagingDirectory)/$(appName).zip' # Path to the published artifact
+        package: '$(Build.ArtifactStagingDirectory)/drop/$(appName).zip' # Path to the published artifact
         appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
