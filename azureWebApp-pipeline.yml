@@ -87,6 +87,13 @@ stages:
       artifact: 'myWebApp'
       displayName: 'Publish Build Artifact'
 
+  # In your release stage/pipeline
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current' # or 'specific' if from another build
+        artifactName: 'myWebApp'
+        downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
+
 - stage: Deploy
   displayName: Deploy to Azure App Service
   dependsOn: Build # This stage depends on the successful completion of the Build stage
