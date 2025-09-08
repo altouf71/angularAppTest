@@ -2,43 +2,59 @@
 # Build a Node.js project that uses Angular.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+# azure-pipelines.yml
 
 trigger:
-- main
+  - main # Trigger the pipeline on pushes to the main branch
 
 pool:
-  myLapTop
+  myLapTop # Use a Linux agent for building
 
-steps:
-#  - task: DownloadBuildArtifacts@1
-#    inputs:
-#      buildType: 'specific'
-#      project: '488af890-9aa3-402a-8504-fef1877567b7'
-#      pipeline: '1'
-#      specificBuildWithTriggering: true
-#      buildVersionToDownload: 'latest'
-#      allowPartiallySucceededBuilds: true
-#      downloadType: 'single'
-#      artifactName: 'myWebApp'
-#      downloadPath: '$(System.ArtifactsDirectory)'
+variables:
+  appName: 'anotherAngularTest' # Name of your Azure App Service
+  azureSubscription: 'Azure subscription 1(0ea2ee0e-54d2-4fb8-ab64-cd4250597f0d)' # Name of your Azure service connection
 
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      buildType: 'specific'
-      project: '488af890-9aa3-402a-8504-fef1877567b7'
-      definition: '1'
-      specificBuildWithTriggering: true
-      buildVersionToDownload: 'latest'
-      allowPartiallySucceededBuilds: true
-      targetPath: '$(Pipeline.Workspace)'
+stages:
+- stage: Build
+  displayName: Build Node.js Application
+  jobs:
+  - job: BuildJob
+    displayName: Build and Package
+    steps:
+    - task: NodeTool@0
+      displayName: 'Use Node.js 20.x'
+      inputs:
+        versionSpec: '20.x' # Specify the Node.js version
 
-  - task: AzureWebApp@1
-    inputs:
-      azureSubscription: 'Azure subscription 1(0ea2ee0e-54d2-4fb8-ab64-cd4250597f0d)'
-      appType: 'webApp'
-      appName: 'angularTestAppWin'
-      deployToSlotOrASE: true
-      resourceGroupName: 'anotherAngularTest_group'
-      slotName: 'production'
-      package: '$(System.DefaultWorkingDirectory)'
-      deploymentMethod: 'auto'
+    - script: |
+        npm install # Install project dependencies
+        npm run build # Run your build script (if applicable)
+      displayName: 'Install dependencies and Build'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive Application Files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+        replaceExistingArchive: true
+
+    - publish: '$(Build.ArtifactStagingDirectory)/$(appName).zip'
+      artifact: drop
+      displayName: 'Publish Build Artifact'
+
+- stage: Deploy
+  displayName: Deploy to Azure App Service
+  dependsOn: Build # This stage depends on the successful completion of the Build stage
+  jobs:
+  - job: DeployJob
+    displayName: Deploy Application
+    steps:
+    - task: AzureWebApp@1
+      displayName: 'Deploy Azure App Service'
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        appName: '$(appName)'
+        package: '$(Pipeline.Workspace)/drop/$(appName).zip' # Path to the published artifact
+        appType: 'webAppLinux' # Specify 'webAppLinux' for Linux-based App Service
