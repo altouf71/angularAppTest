@@ -116,7 +116,7 @@ stages:
           #buildType: 'current' # or 'specific' if from another build
           artifactName: 'myWebApp'
           #downloadPath: '$(System.DefaultWorkingDirectory)' # or a specific path
-          downloadPath: '$(Build.ArtifactStagingDirectory)/myWebApp'
+          downloadPath: '$(Build.ArtifactStagingDirectory)/myWebApp/'
           #downloadPath: '$(Build.ArtifactsDirectory)/'
 
 #      - task: DownloadBuildArtifacts@1
