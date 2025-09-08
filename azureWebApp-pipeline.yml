@@ -32,13 +32,13 @@ steps:
       allowPartiallySucceededBuilds: true
       targetPath: '$(Pipeline.Workspace)'
 
-  - task: AzureWebApp@1 
+  - task: AzureWebApp@1
     inputs:
       azureSubscription: 'Azure subscription 1(0ea2ee0e-54d2-4fb8-ab64-cd4250597f0d)'
-      appType: 'webAppLinux'
-      appName: 'anotherAngularTest'
+      appType: 'webApp'
+      appName: 'angularTestAppWin'
       deployToSlotOrASE: true
       resourceGroupName: 'anotherAngularTest_group'
       slotName: 'production'
       package: '$(System.DefaultWorkingDirectory)'
-      runtimeStack: 'NODE|20-lts'
+      deploymentMethod: 'auto'
