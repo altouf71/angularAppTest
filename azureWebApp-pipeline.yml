@@ -133,7 +133,7 @@ stages:
 
 - stage: Deploy
   displayName: Deploy to Azure App Service
-  dependsOn: Build # Build  This stage depends on the successful completion of the Release stage
+  dependsOn: Release # Build  This stage depends on the successful completion of the Release stage
   jobs:
   - job: DeployJob
     displayName: Deploy Application
