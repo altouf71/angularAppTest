@@ -53,7 +53,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist/<your-app-name> # Path to your built Angular app
+        publish_dir: ./dist/anotherAngularTest # Path to your built Angular app
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
