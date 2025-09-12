@@ -54,7 +54,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: apptTest # Name of the artifact
-        path: dist/ # Path to the directory containing your build output (e.g., 'dist/', 'build/')
+        path: dist/apptTest # Path to the directory containing your build output (e.g., 'dist/', 'build/')
         retention-days: 7 # Optional: Set a custom retention period for the artifact
     
 #    - name: Deploy to GitHub Pages
