@@ -71,10 +71,15 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }} 
   
     steps: 
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: angularAppTest #node-app
+        path: dist/anotherAngularTest
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
-        name: node-app
+        name: angularAppTest #node-app
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
