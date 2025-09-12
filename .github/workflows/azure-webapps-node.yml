@@ -36,6 +36,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }} # Or use publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
@@ -49,13 +55,6 @@ jobs:
         npm run build -- --configuration=production   # --if-present
         # npm run test --if-present
 
-        
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: apptTest # Name of the artifact
-        path: dist/apptTest # Path to the directory containing your build output (e.g., 'dist/', 'build/')
-        retention-days: 7 # Optional: Set a custom retention period for the artifact
     
 #    - name: Deploy to GitHub Pages
 #      uses: peaceiris/actions-gh-pages@v4
@@ -79,6 +78,14 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }} 
   
     steps: 
+            
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: apptTest # Name of the artifact
+        path: dist/apptTest # Path to the directory containing your build output (e.g., 'dist/', 'build/')
+        retention-days: 7 # Optional: Set a custom retention period for the artifact
+        
     #- name: Upload build artifact
     #  uses: actions/upload-artifact@v4
     #  with:
