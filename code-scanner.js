@@ -1,59 +1,112 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const allowedExtensions = [
-  ".cs", ".ts", ".html", ".css", ".json", ".sql"
+const ROOT = process.cwd();
+
+// Only these extensions
+const INCLUDED_EXTENSIONS = [".ts", ".js", ".html", ".css", ".scss"];
+
+// Skip these directories completely
+const EXCLUDED_DIRS = [
+  "node_modules",
+  ".git",
+  "dist",
+  "build",
+  "coverage",
+  ".angular",
+  "tmp",
+  "out",
 ];
 
-const CHUNK_SIZE = 3000;
+// Chunk size in characters (not tokens)
+const MAX_CHARS_PER_CHUNK = 4000;
 
-function scanDirectory(rootPath) {
-  const results = [];
+function isExcludedDir(dirName) {
+  return EXCLUDED_DIRS.includes(dirName);
+}
 
-  function walk(dir) {
-    const files = fs.readdirSync(dir);
+function shouldIncludeFile(filePath) {
+  const ext = path.extname(filePath);
+  if (!INCLUDED_EXTENSIONS.includes(ext)) return false;
 
-    for (const file of files) {
-      const fullPath = path.join(dir, file);
-      const stats = fs.statSync(fullPath);
+  const normalized = filePath.replace(/\\/g, "/");
 
-      if (stats.isDirectory()) {
-        walk(fullPath);
-      } else {
-        if (shouldScanFile(fullPath)) {
-          const content = fs.readFileSync(fullPath, "utf-8");
-          const chunks = splitIntoChunks(fullPath, content);
-          results.push(...chunks);
-        }
+  // Skip tests/specs and auto-generated stuff
+  if (normalized.endsWith(".spec.ts")) return false;
+  if (normalized.endsWith(".test.ts")) return false;
+  if (normalized.includes("/generated/")) return false;
+  if (normalized.includes("/auto/")) return false;
+  if (normalized.includes("/environment.")) return false;
+
+  return true;
+}
+
+function walkDir(dir, fileList = []) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      if (!isExcludedDir(entry.name)) {
+        walkDir(fullPath, fileList);
+      }
+    } else if (entry.isFile()) {
+      const rel = path.relative(ROOT, fullPath);
+      if (shouldIncludeFile(rel)) {
+        fileList.push(fullPath);
       }
     }
   }
 
-  walk(rootPath);
-  return results;
+  return fileList;
 }
 
-function shouldScanFile(filePath) {
-  return allowedExtensions.includes(path.extname(filePath).toLowerCase());
-}
-
-function splitIntoChunks(filePath, content) {
+function chunkContent(content) {
   const chunks = [];
+  let index = 0;
 
-  for (let i = 0; i < content.length; i += CHUNK_SIZE) {
-    chunks.push({
-      filePath,
-      chunkIndex: i / CHUNK_SIZE,
-      content: content.substring(i, i + CHUNK_SIZE)
-    });
+  while (index < content.length) {
+    const end = index + MAX_CHARS_PER_CHUNK;
+    chunks.push(content.slice(index, end));
+    index = end;
   }
 
   return chunks;
 }
 
-// Run
-const rootPath = process.argv[2] || "./";
-const result = scanDirectory(rootPath);
+function main() {
+  console.log("🔎 Scanning project for relevant source files...");
 
-fs.writeFileSync("scan-output.json", JSON.stringify(result, null, 2));
-console.log("✨ Scan complete! Output saved to scan-output.json");
+  const files = walkDir(ROOT);
+  console.log(`📁 Found ${files.length} files to include.`);
+
+  const allChunks = [];
+  let chunkCount = 0;
+
+  for (const filePath of files) {
+    const relPath = path.relative(ROOT, filePath).replace(/\\/g, "/");
+    const content = fs.readFileSync(filePath, "utf-8");
+
+    // Skip empty / trivial files
+    if (!content.trim()) continue;
+
+    const chunks = chunkContent(content);
+    const totalChunks = chunks.length;
+
+    chunks.forEach((chunkContent, index) => {
+      allChunks.push({
+        filePath: relPath,
+        chunkIndex: index,
+        totalChunks,
+        content: chunkContent,
+      });
+      chunkCount++;
+    });
+  }
+
+  fs.writeFileSync("scan-output.json", JSON.stringify(allChunks, null, 2));
+  console.log(`✅ Scan complete. ${chunkCount} chunks written to scan-output.json.`);
+}
+
+main();
