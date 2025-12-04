@@ -27,7 +27,7 @@ jobs:
     - name: Run GPT documentation agent
       run: node generate-docs.js
       env:
-        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        OPENAI_API_KEY: ${{ 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 }}
 
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v3
