@@ -30,7 +30,7 @@ jobs:
         OPENAI_API_KEY:  ${{ secrets.OPENAI_API_KEY }}
 
     - name: Upload documentation artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: AI-Docs
         path: docs/
