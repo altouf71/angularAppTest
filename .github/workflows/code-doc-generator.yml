@@ -25,7 +25,7 @@ jobs:
       run: node code-scanner.js
 
     - name: Run GPT documentation agent
-      run: node generate-docs.js
+      run: node generate-doc.js
       env:
         OPENAI_API_KEY:  ${{ secrets.OPENAI_API_KEY }}
 
