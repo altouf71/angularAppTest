@@ -1,0 +1,36 @@
+name: AI Documentation Agent
+
+on:
+  push:
+    branches: ["main", "release/*"]
+  pull_request:
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '22.x' 
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run scanner to extract code chunks
+      run: node code-scanner.js
+
+    - name: Run GPT documentation agent
+      run: node generate-docs.js
+      env:
+        OPENAI_API_KEY:  ${{ secrets.OPENAI_API_KEY }}
+
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: AI-Docs
+        path: docs/
