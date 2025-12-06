@@ -38,14 +38,14 @@ jobs:
       # Install dependencies
       # -------------------------
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       # -------------------------
       # Lint
       # -------------------------
       - name: Lint
         id: lint
-        run: yarn lint
+        run: npm run lint --if-present
 
       # -------------------------
       # Unit tests (Angular CI mode)
@@ -53,7 +53,7 @@ jobs:
       - name: Run tests (CI mode)
         id: tests
         run: |
-          yarn test --if-present -- \
+          npm test --if-present -- \
             --watch=false \
             --browsers=ChromeHeadless
 
