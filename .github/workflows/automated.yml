@@ -45,7 +45,7 @@ jobs:
       # -------------------------
       - name: Lint
         id: lint
-        run: npm run lint --if-present
+        run: yarn lint
 
       # -------------------------
       # Unit tests (Angular CI mode)
