@@ -1,4 +1,4 @@
-name: "PR Automation"
+name: "PR Automation - Safe Test"
 
 on:
   pull_request:
@@ -13,104 +13,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout PR code
+    - name: Checkout code
       uses: actions/checkout@v4
 
-    # -----------------------------
-    # Setup Node.js
-    # -----------------------------
-    - name: Setup Node.js
+    - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
-        cache: 'npm'
+        node-version: 18
 
-    # -----------------------------
-    # Install Dependencies
-    # -----------------------------
     - name: Install dependencies
-      run: |
-        npm install
+      run: npm install
 
-    # -----------------------------
-    # Run Lint
-    # -----------------------------
     - name: Run lint
-      run: |
-        npm run lint --if-present
+      run: npm run lint --if-present
       continue-on-error: true
 
-    # -----------------------------
-    # Run Tests
-    # -----------------------------
     - name: Run tests
-      run: |
-        npm test --if-present -- --run
+      run: npm test --if-present
       continue-on-error: true
 
-    # -----------------------------
-    # Generate Diff
-    # -----------------------------
-    - name: Get PR diff
+    - name: Output summary
       run: |
-        git fetch origin ${{ github.event.pull_request.base.ref }}
-        git diff origin/${{ github.event.pull_request.base.ref }} > changes.diff
-
-    # -----------------------------
-    # Generate Suggested Tests
-    # -----------------------------
-    - name: Generate test suggestions
-      id: suggest
-      run: |
-        echo "Creating scenario suggestions..."
-        python3 << 'EOF'
-import re
-
-with open("changes.diff", "r") as f:
-    diff = f.read()
-
-scenarios = []
-
-if "component" in diff.lower():
-    scenarios.append("- UI component changed → test rendering + interactions")
-
-if "service" in diff.lower():
-    scenarios.append("- Service logic changed → test business rules + returned values")
-
-if "route" in diff.lower() or "express" in diff.lower():
-    scenarios.append("- Backend route changed → test endpoint responses")
-
-if "form" in diff.lower():
-    scenarios.append("- Form updated → test validation and required fields")
-
-if not scenarios:
-    scenarios.append("No specific changes detected → do general smoke tests")
-
-with open("suggestions.txt", "w") as f:
-    f.write("\n".join(scenarios))
-EOF
-
-    # -----------------------------
-    # Upload Suggestions File
-    # -----------------------------
-    - name: Upload scenarios file
-      uses: actions/upload-artifact@v4
-      with:
-        name: scenarios
-        path: suggestions.txt
-
-    # -----------------------------
-    # Comment Back on PR
-    # -----------------------------
-    - name: Comment on PR
-      uses: marocchino/sticky-pull-request-comment@v2
-      with:
-        recreate: true
-        header: "### 🤖 Automated PR Quality Report"
-        message: |
-          **Lint & Tests Completed**
-
-          A scenarios file has been generated based on your changes.
-
-          ### 🔍 Suggested Manual Test Scenarios
-          View the file **suggestions.txt** in the workflow artifacts.
+        echo "Lint + tests done."
+        echo "This workflow validates that YAML is working."
