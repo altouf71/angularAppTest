@@ -5,35 +5,47 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
-  pr-checks:
+  quality-checks:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: 22
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run lint
-      run: npm run lint --if-present
-      continue-on-error: true
+      - name: Lint
+        run: npm run lint --if-present
 
-    - name: Run tests
-      run: npm test --if-present
-      continue-on-error: true
+      - name: Run tests (CI mode)
+        run: |
+          npm test --if-present -- \
+            --watch=false \
+            --browsers=ChromeHeadless
 
-    - name: Output summary
-      run: |
-        echo "Lint + tests done."
-        echo "This workflow validates that YAML is working."
+      - name: Security audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
+      - name: PR Summary
+        run: |
+          echo "## ✅ PR Automation Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Node version: 20" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint: completed" >> $GITHUB_STEP_SUMMARY
+          echo "- Tests: completed" >> $GITHUB_STEP_SUMMARY
+          echo "- Security scan: completed" >> $GITHUB_STEP_SUMMARY
