@@ -79,7 +79,29 @@
 
 </div>
 
+<div>this is just a test for automation github</div>
+<div>this is just a test for automation github</div>
+<div class="main-body" [ngStyle]="{'position':'relative', 'width':'100%', 'height':'100%'}">
+  <!--</div> *ngIf="viewState">-->
 
+  <div class="main-nav-body"><!--</div> *ngIf="navViewState">-->
+
+    <div id="main" [ngClass]="navAnimationState"
+      [ngStyle]="{'display':'block','position':'absolute','top':'60px','left':'0px','width':'50%','float':'left'}">
+
+      <span [ngStyle]="{'font-size':'30px','cursor':'pointer'}" (click)="openNav()">&#9776; open</span>
+
+      <div id="mySidenav" class="sidenav">
+        <a href="" class="closebtn" (click)="closeNav()">&times;</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a>
+        <a href="#">Contact</a>
+      </div>
+
+    </div>
+
+</div>
 
 <div class="main-login-body"><!--</div> *ngIf="logViewState">-->
 
