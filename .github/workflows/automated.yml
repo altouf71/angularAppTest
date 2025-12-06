@@ -14,38 +14,66 @@ concurrency:
 
 jobs:
   quality-checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
+      # -------------------------
+      # Checkout
+      # -------------------------
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      # -------------------------
+      # Node setup
+      # -------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
+      # -------------------------
+      # Install dependencies
+      # -------------------------
       - name: Install dependencies
         run: npm ci
 
+      # -------------------------
+      # Lint
+      # -------------------------
       - name: Lint
+        id: lint
         run: npm run lint --if-present
 
+      # -------------------------
+      # Unit tests (Angular CI mode)
+      # -------------------------
       - name: Run tests (CI mode)
+        id: tests
         run: |
           npm test --if-present -- \
             --watch=false \
             --browsers=ChromeHeadless
 
+      # -------------------------
+      # Security audit (non-blocking)
+      # -------------------------
       - name: Security audit
-        run: npm audit --audit-level=high
+        id: audit
         continue-on-error: true
+        run: npm audit --audit-level=high
 
+      # -------------------------
+      # PR Summary (always runs)
+      # -------------------------
       - name: PR Summary
+        if: always()
         run: |
           echo "## ✅ PR Automation Results" >> $GITHUB_STEP_SUMMARY
-          echo "- Node version: 20" >> $GITHUB_STEP_SUMMARY
-          echo "- Lint: completed" >> $GITHUB_STEP_SUMMARY
-          echo "- Tests: completed" >> $GITHUB_STEP_SUMMARY
-          echo "- Security scan: completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node.js:** 20" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lint:** ${{ steps.lint.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tests:** ${{ steps.tests.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Security audit:** ${{ steps.audit.outcome }}" >> $GITHUB_STEP_SUMMARY
