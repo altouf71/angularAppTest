@@ -28,7 +28,9 @@ jobs:
       run: node generate-doc.js
       env:
         OPENAI_API_KEY:  ${{ secrets.OPENAI_API_KEY }}
-
+        OPENAI_MODEL: gpt-4.1-mini
+        DOC_MAX_FILES: 200
+        DOC_CONCURRENCY: 3
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
       with:
