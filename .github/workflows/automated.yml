@@ -53,7 +53,7 @@ jobs:
       - name: Run tests (CI mode)
         id: tests
         run: |
-          npm test --if-present -- \
+          yarn test --if-present -- \
             --watch=false \
             --browsers=ChromeHeadless
 
