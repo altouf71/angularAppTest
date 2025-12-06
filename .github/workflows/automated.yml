@@ -74,9 +74,13 @@ jobs:
       - name: Generate Suggested Tests
         id: suggestions
         run: |
+          echo "Running test scenario generator..."
           python3 << 'EOF'
 import re
-diff = open("changes.diff").read()
+
+with open("changes.diff", "r") as f:
+    diff = f.read()
+
 scenarios = []
 
 # Basic examples
@@ -87,11 +91,13 @@ if ".service.ts" in diff:
 if "routes" in diff or "express" in diff.lower():
     scenarios.append("- Test API endpoints return correct responses")
 if "form" in diff:
-    scenarios.append("- Validate form validation rules")
+    scenarios.append("- Validate Angular form validation rules")
+
 if not scenarios:
     scenarios.append("No specific changes detected — run general smoke tests.")
 
-open("scenarios.txt", "w").write("\n".join(scenarios))
+with open("scenarios.txt", "w") as f:
+    f.write("\n".join(scenarios))
 EOF
 
       - name: Upload Scenarios Artifact
