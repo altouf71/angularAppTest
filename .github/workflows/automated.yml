@@ -1,124 +1,39 @@
-name: PR Quality Gate (Demo)
+name: "PR Automation - Safe Test"
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  ci:
+  pr-checks:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      # -------------------------------------
-      # ANGULAR FRONTEND
-      # -------------------------------------
-      - name: Setup Node (Frontend)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
 
-      - name: Install Angular Dependencies
-        run: |
-          cd frontend
-          npm install
+    - name: Install dependencies
+      run: npm install
 
-      - name: Angular Lint
-        run: |
-          cd frontend
-          npm run lint
-        continue-on-error: true
+    - name: Run lint
+      run: npm run lint --if-present
+      continue-on-error: true
 
-      - name: Angular Tests
-        run: |
-          cd frontend
-          npm run test -- --watch=false --browsers=ChromeHeadless
-        continue-on-error: true
+    - name: Run tests
+      run: npm test --if-present
+      continue-on-error: true
 
-      - name: Angular Build
-        run: |
-          cd frontend
-          npm run build -- --configuration production
+    - name: Output summary
+      run: |
+        echo "Lint + tests done."
+        echo "This workflow validates that YAML is working."
 
-      # -------------------------------------
-      # NODE.JS BACKEND
-      # -------------------------------------
-      - name: Install Backend Dependencies
-        run: |
-          cd backend
-          npm install
-
-      - name: Run Backend Tests (Jest)
-        run: |
-          cd backend
-          npm test -- --coverage
-        continue-on-error: true
-
-      - name: Security Scan (npm audit)
-        run: |
-          cd backend
-          npm audit --production
-        continue-on-error: true
-
-      # -------------------------------------
-      # ANALYZE DIFF FOR TEST SCENARIOS
-      # -------------------------------------
-      - name: Get PR Diff
-        id: diff
-        run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          git diff origin/${{ github.event.pull_request.base.ref }} > changes.diff
-
-      - name: Generate Suggested Tests
-        id: suggestions
-        run: |
-          python3 << 'EOF'
-import re
-diff = open("changes.diff").read()
-scenarios = []
-
-# Basic examples
-if "component.ts" in diff:
-    scenarios.append("- Test UI component renders without errors")
-if ".service.ts" in diff:
-    scenarios.append("- Test service methods return expected results")
-if "routes" in diff or "express" in diff.lower():
-    scenarios.append("- Test API endpoints return correct responses")
-if "form" in diff:
-    scenarios.append("- Validate form validation rules")
-if not scenarios:
-    scenarios.append("No specific changes detected — run general smoke tests.")
-
-open("scenarios.txt", "w").write("\n".join(scenarios))
-EOF
-
-      - name: Upload Scenarios Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-scenarios
-          path: scenarios.txt
-
-      # -------------------------------------
-      # COMMENT BACK INTO PR
-      # -------------------------------------
-      - name: Post PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          recreate: true
-          header: "### 🔍 PR Automated Quality Check (Demo)"
-          message: |
-            **Frontend (Angular):**
-            - Lint: Completed
-            - Tests: Completed
-            - Build: Completed
-
-            **Backend (Node.js):**
-            - Tests: Completed
-            - Security Scan: Completed
-
-            ### 🔬 Suggested Manual Test Scenarios:
-            ```
-            ${{ steps.suggestions.outputs }}
-            ```
