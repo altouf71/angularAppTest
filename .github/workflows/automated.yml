@@ -1,4 +1,4 @@
-name: PR Quality Gate (Demo)
+name: PR Quality Gate
 
 on:
   pull_request:
@@ -12,15 +12,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # -------------------------------------
-      # ANGULAR FRONTEND
-      # -------------------------------------
-      - name: Setup Node (Frontend)
+      # -----------------------------
+      # Frontend (Angular)
+      # -----------------------------
+      - name: Setup Node for frontend
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install Angular Dependencies
+      - name: Install frontend deps
         run: |
           cd frontend
           npm install
@@ -42,89 +42,89 @@ jobs:
           cd frontend
           npm run build -- --configuration production
 
-      # -------------------------------------
-      # NODE.JS BACKEND
-      # -------------------------------------
-      - name: Install Backend Dependencies
+      # -----------------------------
+      # Backend (Node.js)
+      # -----------------------------
+      - name: Install backend deps
         run: |
           cd backend
           npm install
 
-      - name: Run Backend Tests (Jest)
+      - name: Backend Tests
         run: |
           cd backend
           npm test -- --coverage
         continue-on-error: true
 
-      - name: Security Scan (npm audit)
+      - name: Security Scan
         run: |
           cd backend
           npm audit --production
         continue-on-error: true
 
-      # -------------------------------------
-      # ANALYZE DIFF FOR TEST SCENARIOS
-      # -------------------------------------
+      # -----------------------------
+      # Get PR Diff
+      # -----------------------------
       - name: Get PR Diff
-        id: diff
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
           git diff origin/${{ github.event.pull_request.base.ref }} > changes.diff
 
+      # -----------------------------
+      # Generate Suggested Test Cases
+      # -----------------------------
       - name: Generate Suggested Tests
-        id: suggestions
         run: |
-          echo "Running test scenario generator..."
+          echo "Generating scenarios..."
           python3 << 'EOF'
 import re
 
+# Read diff
 with open("changes.diff", "r") as f:
     diff = f.read()
 
 scenarios = []
 
-# Basic examples
+# Basic patterns
 if "component.ts" in diff:
-    scenarios.append("- Test UI component renders without errors")
+    scenarios.append("- Test that Angular component renders correctly.")
 if ".service.ts" in diff:
-    scenarios.append("- Test service methods return expected results")
-if "routes" in diff or "express" in diff.lower():
-    scenarios.append("- Test API endpoints return correct responses")
+    scenarios.append("- Validate updated Angular service logic.")
+if "express" in diff.lower() or "router" in diff.lower():
+    scenarios.append("- API endpoint behavior updated — test route responses.")
 if "form" in diff:
-    scenarios.append("- Validate Angular form validation rules")
+    scenarios.append("- Validate form validation rules and UI errors.")
 
+# Fallback
 if not scenarios:
-    scenarios.append("No specific changes detected — run general smoke tests.")
+    scenarios.append("No special changes detected — run general smoke tests.")
 
+# Save output
 with open("scenarios.txt", "w") as f:
     f.write("\n".join(scenarios))
 EOF
 
-      - name: Upload Scenarios Artifact
+      - name: Upload scenarios artifact
         uses: actions/upload-artifact@v4
         with:
           name: test-scenarios
           path: scenarios.txt
 
-      # -------------------------------------
-      # COMMENT BACK INTO PR
-      # -------------------------------------
-      - name: Post PR Comment
+      # -----------------------------
+      # Comment on PR
+      # -----------------------------
+      - name: Comment on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          header: "### 🤖 Automated Quality Report"
           recreate: true
-          header: "### 🔍 PR Automated Quality Check (Demo)"
           message: |
-            **Frontend (Angular):**
-            - Lint: Completed
-            - Tests: Completed
-            - Build: Completed
+            **CI Completed**
 
-            **Backend (Node.js):**
-            - Tests: Completed
-            - Security Scan: Completed
+            - Angular lint/test/build done
+            - Backend test + audit done
 
-            ### 🔬 Suggested Manual Test Scenarios:
-            ```
-            ${{ steps.suggestions.outputs }}
-            ```
+            ### Suggested Manual Test Scenarios
+            \`\`\`
+            (See attached scenarios.txt artifact)
+            \`\`\`
