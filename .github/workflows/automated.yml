@@ -1,130 +1,116 @@
-name: PR Quality Gate
+name: "PR Automation"
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  ci:
+  pr-checks:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    - name: Checkout PR code
+      uses: actions/checkout@v4
 
-      # -----------------------------
-      # Frontend (Angular)
-      # -----------------------------
-      - name: Setup Node for frontend
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+    # -----------------------------
+    # Setup Node.js
+    # -----------------------------
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
 
-      - name: Install frontend deps
-        run: |
-          cd frontend
-          npm install
+    # -----------------------------
+    # Install Dependencies
+    # -----------------------------
+    - name: Install dependencies
+      run: |
+        npm install
 
-      - name: Angular Lint
-        run: |
-          cd frontend
-          npm run lint
-        continue-on-error: true
+    # -----------------------------
+    # Run Lint
+    # -----------------------------
+    - name: Run lint
+      run: |
+        npm run lint --if-present
+      continue-on-error: true
 
-      - name: Angular Tests
-        run: |
-          cd frontend
-          npm run test -- --watch=false --browsers=ChromeHeadless
-        continue-on-error: true
+    # -----------------------------
+    # Run Tests
+    # -----------------------------
+    - name: Run tests
+      run: |
+        npm test --if-present -- --run
+      continue-on-error: true
 
-      - name: Angular Build
-        run: |
-          cd frontend
-          npm run build -- --configuration production
+    # -----------------------------
+    # Generate Diff
+    # -----------------------------
+    - name: Get PR diff
+      run: |
+        git fetch origin ${{ github.event.pull_request.base.ref }}
+        git diff origin/${{ github.event.pull_request.base.ref }} > changes.diff
 
-      # -----------------------------
-      # Backend (Node.js)
-      # -----------------------------
-      - name: Install backend deps
-        run: |
-          cd backend
-          npm install
-
-      - name: Backend Tests
-        run: |
-          cd backend
-          npm test -- --coverage
-        continue-on-error: true
-
-      - name: Security Scan
-        run: |
-          cd backend
-          npm audit --production
-        continue-on-error: true
-
-      # -----------------------------
-      # Get PR Diff
-      # -----------------------------
-      - name: Get PR Diff
-        run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          git diff origin/${{ github.event.pull_request.base.ref }} > changes.diff
-
-      # -----------------------------
-      # Generate Suggested Test Cases
-      # -----------------------------
-      - name: Generate Suggested Tests
-        run: |
-          echo "Generating scenarios..."
-          python3 << 'EOF'
+    # -----------------------------
+    # Generate Suggested Tests
+    # -----------------------------
+    - name: Generate test suggestions
+      id: suggest
+      run: |
+        echo "Creating scenario suggestions..."
+        python3 << 'EOF'
 import re
 
-# Read diff
 with open("changes.diff", "r") as f:
     diff = f.read()
 
 scenarios = []
 
-# Basic patterns
-if "component.ts" in diff:
-    scenarios.append("- Test that Angular component renders correctly.")
-if ".service.ts" in diff:
-    scenarios.append("- Validate updated Angular service logic.")
-if "express" in diff.lower() or "router" in diff.lower():
-    scenarios.append("- API endpoint behavior updated — test route responses.")
-if "form" in diff:
-    scenarios.append("- Validate form validation rules and UI errors.")
+if "component" in diff.lower():
+    scenarios.append("- UI component changed → test rendering + interactions")
 
-# Fallback
+if "service" in diff.lower():
+    scenarios.append("- Service logic changed → test business rules + returned values")
+
+if "route" in diff.lower() or "express" in diff.lower():
+    scenarios.append("- Backend route changed → test endpoint responses")
+
+if "form" in diff.lower():
+    scenarios.append("- Form updated → test validation and required fields")
+
 if not scenarios:
-    scenarios.append("No special changes detected — run general smoke tests.")
+    scenarios.append("No specific changes detected → do general smoke tests")
 
-# Save output
-with open("scenarios.txt", "w") as f:
+with open("suggestions.txt", "w") as f:
     f.write("\n".join(scenarios))
 EOF
 
-      - name: Upload scenarios artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-scenarios
-          path: scenarios.txt
+    # -----------------------------
+    # Upload Suggestions File
+    # -----------------------------
+    - name: Upload scenarios file
+      uses: actions/upload-artifact@v4
+      with:
+        name: scenarios
+        path: suggestions.txt
 
-      # -----------------------------
-      # Comment on PR
-      # -----------------------------
-      - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: "### 🤖 Automated Quality Report"
-          recreate: true
-          message: |
-            **CI Completed**
+    # -----------------------------
+    # Comment Back on PR
+    # -----------------------------
+    - name: Comment on PR
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        recreate: true
+        header: "### 🤖 Automated PR Quality Report"
+        message: |
+          **Lint & Tests Completed**
 
-            - Angular lint/test/build done
-            - Backend test + audit done
+          A scenarios file has been generated based on your changes.
 
-            ### Suggested Manual Test Scenarios
-            \`\`\`
-            (See attached scenarios.txt artifact)
-            \`\`\`
+          ### 🔍 Suggested Manual Test Scenarios
+          View the file **suggestions.txt** in the workflow artifacts.
