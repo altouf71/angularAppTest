@@ -103,7 +103,8 @@ jobs:
           # Typical Angular:
           # ng test --watch=false --browsers=ChromeHeadless --code-coverage
           npm test -- --watch=false --browsers=ChromeHeadless --code-coverage \
-            2>&1 | tee "../${{ env.REPORT_DIR }}/tests.txt"
+            # 2>&1 | tee "../${{ env.REPORT_DIR }}/tests.txt"
+            2>&1 | tee reports/tests.txt
 
       # ----------------------------
       # Secret scanning
