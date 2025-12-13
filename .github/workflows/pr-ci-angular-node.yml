@@ -63,14 +63,15 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: |
           mkdir -p reports
-          npm run lint --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/eslint.txt"
+          npm run lint --silent 2>&1 | tee reports/eslint.txt
 
       - name: TypeScript typecheck
         id: typecheck
         working-directory: ${{ env.APP_DIR }}
         run: |
           # Requires "typecheck": "tsc --noEmit"
-          npm run typecheck --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/typecheck.txt"
+          # npm run typecheck --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/typecheck.txt"
+          npm run typecheck --silent 2>&1 | tee reports/typecheck.txt
 
       # ----------------------------
       # Security – dependencies
