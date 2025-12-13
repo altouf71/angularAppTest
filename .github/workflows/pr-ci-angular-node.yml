@@ -70,7 +70,8 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: |
           # Requires "typecheck": "tsc --noEmit"
-          npm run typecheck --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/typecheck.txt"
+          # npm run typecheck --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/typecheck.txt"
+          npm run typecheck --silent 2>&1 | tee reports/typecheck.txt
 
       # ----------------------------
       # Security – dependencies
