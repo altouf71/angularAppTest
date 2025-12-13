@@ -90,7 +90,8 @@ jobs:
         id: build
         working-directory: ${{ env.APP_DIR }}
         run: |
-          npm run build --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/build.txt"
+          # npm run build --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/build.txt"
+          npm run build --silent 2>&1 | tee reports/build.txt
 
       # ----------------------------
       # Tests + Coverage
