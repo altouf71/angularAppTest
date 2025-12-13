@@ -63,7 +63,6 @@ jobs:
         working-directory: ${{ env.APP_DIR }}
         run: |
           mkdir -p reports
-          # npm run lint --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/eslint.txt"
           npm run lint --silent 2>&1 | tee reports/eslint.txt
 
       - name: TypeScript typecheck
