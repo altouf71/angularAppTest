@@ -1,0 +1,204 @@
+name: PR CI - Angular / Node.js (Node 20)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+concurrency:
+  group: pr-ci-angular-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+  APP_DIR: "."               # change if Angular app is in subfolder
+  REPORT_DIR: "reports"
+  DOCS_DIR: "docs-generated"
+
+jobs:
+  angular-ci:
+    name: Angular / Node CI
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------
+      # Checkout
+      # ----------------------------
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ----------------------------
+      # Setup Node
+      # ----------------------------
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ env.APP_DIR }}/package-lock.json
+
+      - name: Prepare folders
+        run: |
+          mkdir -p "${{ env.REPORT_DIR }}"
+          mkdir -p "${{ env.DOCS_DIR }}"
+
+      # ----------------------------
+      # Install dependencies
+      # ----------------------------
+      - name: Install dependencies (npm ci)
+        working-directory: ${{ env.APP_DIR }}
+        run: npm ci
+
+      # ----------------------------
+      # Code Quality
+      # ----------------------------
+      - name: ESLint
+        id: lint
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          mkdir -p reports
+          npm run lint --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/eslint.txt"
+
+      - name: TypeScript typecheck
+        id: typecheck
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          # Requires "typecheck": "tsc --noEmit"
+          npm run typecheck --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/typecheck.txt"
+
+      # ----------------------------
+      # Security – dependencies
+      # ----------------------------
+      - name: npm audit (HIGH+)
+        id: audit
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          npm audit --json > "../${{ env.REPORT_DIR }}/npm-audit.json" || true
+          npm audit --audit-level=high
+
+      # ----------------------------
+      # Build (Angular)
+      # ----------------------------
+      - name: Angular build
+        id: build
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          npm run build --silent 2>&1 | tee "../${{ env.REPORT_DIR }}/build.txt"
+
+      # ----------------------------
+      # Tests + Coverage
+      # ----------------------------
+      - name: Unit tests (Headless)
+        id: tests
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          # Typical Angular:
+          # ng test --watch=false --browsers=ChromeHeadless --code-coverage
+          npm test -- --watch=false --browsers=ChromeHeadless --code-coverage \
+            2>&1 | tee "../${{ env.REPORT_DIR }}/tests.txt"
+
+      # ----------------------------
+      # Secret scanning
+      # ----------------------------
+      - name: Secret scan (TruffleHog)
+        id: secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: .
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+          extra_args: --only-verified
+
+      # ----------------------------
+      # CodeQL – SAST (JS/TS)
+      # ----------------------------
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+
+      - name: CodeQL build
+        run: |
+          cd "${{ env.APP_DIR }}"
+          npm run build --silent
+
+      - name: CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+
+      # ----------------------------
+      # Documentation (baseline auto)
+      # ----------------------------
+      - name: Generate docs snapshot
+        id: docs
+        run: |
+          echo "# Angular PR Documentation" > "${{ env.DOCS_DIR }}/README.md"
+          echo "" >> "${{ env.DOCS_DIR }}/README.md"
+
+          echo "## Angular Version" >> "${{ env.DOCS_DIR }}/README.md"
+          npx ng version >> "${{ env.DOCS_DIR }}/README.md" || true
+          echo "" >> "${{ env.DOCS_DIR }}/README.md"
+
+          echo "## Project Structure" >> "${{ env.DOCS_DIR }}/README.md"
+          ls -la >> "${{ env.DOCS_DIR }}/README.md"
+          echo "" >> "${{ env.DOCS_DIR }}/README.md"
+
+          echo "## Dependencies" >> "${{ env.DOCS_DIR }}/README.md"
+          npm ls --depth=0 >> "${{ env.DOCS_DIR }}/README.md" || true
+
+      # ----------------------------
+      # Upload artifacts
+      # ----------------------------
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: angular-ci-reports
+          path: ${{ env.REPORT_DIR }}
+
+      - name: Upload docs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: angular-ci-docs
+          path: ${{ env.DOCS_DIR }}
+
+      # ----------------------------
+      # PR summary comment
+      # ----------------------------
+      - name: PR summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = (s) => s === 'success' ? '✅' : (s === 'failure' ? '❌' : '⚠️');
+
+            const results = {
+              "Lint": "${{ steps.lint.outcome }}",
+              "Typecheck": "${{ steps.typecheck.outcome }}",
+              "Security Audit": "${{ steps.audit.outcome }}",
+              "Build": "${{ steps.build.outcome }}",
+              "Tests": "${{ steps.tests.outcome }}",
+              "Secrets": "${{ steps.secrets.outcome }}",
+              "Docs": "${{ steps.docs.outcome }}"
+            };
+
+            let body = `## Angular PR CI Results\n\n`;
+            body += `Artifacts available:\n- **angular-ci-reports**\n- **angular-ci-docs**\n\n`;
+            body += `| Check | Status |\n|---|---|\n`;
+
+            for (const [k, v] of Object.entries(results)) {
+              body += `| ${k} | ${status(v)} ${v} |\n`;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
